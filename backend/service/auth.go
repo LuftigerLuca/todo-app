@@ -9,12 +9,18 @@ import (
 
 type AuthService struct{}
 
-func (s *AuthService) Register(req dto.RegisterRequest) error {
+func (s *AuthService) Register(req dto.RegisterRequest) (string, error) {
 	u := model.User{
 		Username: req.Username,
 		Password: req.Password,
 	}
-	return model.DB.Create(&u).Error
+
+	err := model.DB.Create(&u).Error
+	if err != nil {
+		return "", err
+	}
+
+	return util.GenerateToken(u.ID)
 }
 
 func (s *AuthService) Login(req dto.LoginRequest) (string, error) {

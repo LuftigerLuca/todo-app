@@ -19,12 +19,13 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	if err := ctrl.Service.Register(req); err != nil {
+	token, err := ctrl.Service.Register(req)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "registration success"})
+	c.JSON(http.StatusOK, dto.AuthResponse{Token: token})
 }
 
 func (ctrl *AuthController) Login(c *gin.Context) {
