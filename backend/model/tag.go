@@ -1,6 +1,9 @@
 package model
 
+import "gorm.io/gorm"
+
 type Tag struct {
-	ID    string `json:"id"`
-	Title string `json:"title"`
+	gorm.Model
+	Title string `gorm:"size:100;not null;uniqueIndex" json:"title"`
+	Todos []Todo `gorm:"many2many:todo_tags;" json:"-"`
 }

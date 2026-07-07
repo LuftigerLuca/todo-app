@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type TodoStatus string
 
@@ -11,11 +15,10 @@ const (
 )
 
 type Todo struct {
-	ID          string     `json:"id"`
-	Title       string     `json:"title"`
-	Description string     `json:"description"`
-	Status      TodoStatus `json:"status"`
-	Tags        []Tag      `json:"tags"`
+	gorm.Model
+	Title       string     `gorm:"size:255;not null" json:"title"`
+	Description string     `gorm:"type:text" json:"description"`
+	Status      TodoStatus `gorm:"size:20;default:pending" json:"status"`
 	DueDate     *time.Time `json:"due_date,omitempty"`
-	CreatedAt   time.Time  `json:"created_at"`
+	Tags        []Tag      `gorm:"many2many:todo_tags;" json:"tags"`
 }

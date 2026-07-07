@@ -2,63 +2,43 @@ package controller
 
 import (
 	"net/http"
-	"todo-app/model"
+	"todo-app/dto"
+	"todo-app/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+type AuthController struct {
+	Service service.AuthService
 }
 
-func Login(c *gin.Context) {
-	var input LoginInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
+func (ctrl *AuthController) Register(c *gin.Context) {
+	var req dto.RegisterRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	u := model.User{}
-
-	u.Username = input.Username
-	u.Password = input.Password
-
-	token, err := model.LoginCheck(u.Username, u.Password)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password is incorrect."})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"token": token})
-}
-
-type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-func Register(c *gin.Context) {
-	var input RegisterInput
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	u := model.User{}
-
-	u.Username = input.Username
-	u.Password = input.Password
-
-	_, err := u.SaveUser()
-
-	if err != nil {
+	if err := ctrl.Service.Register(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "registration success"})
+}
+
+func (ctrl *AuthController) Login(c *gin.Context) {
+	var req dto.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := ctrl.Service.Login(req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.AuthResponse{Token: token})
 }
