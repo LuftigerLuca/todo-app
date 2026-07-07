@@ -36,7 +36,7 @@ func ConnectDataBase() {
 	}
 
 	fmt.Println("We are connected to the database", DbDriver)
-	if err := DB.AutoMigrate(&User{}, &Todo{}, &Tag{}); err != nil {
+	if err := DB.AutoMigrate(&User{}, &List{}, &Todo{}, &Tag{}); err != nil {
 		log.Fatal("AutoMigrate error:", err)
 	}
 }

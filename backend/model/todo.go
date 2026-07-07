@@ -20,5 +20,6 @@ type Todo struct {
 	Description string     `gorm:"type:text" json:"description"`
 	Status      TodoStatus `gorm:"size:20;default:pending" json:"status"`
 	DueDate     *time.Time `json:"due_date,omitempty"`
+	ListID      uint       `gorm:"not null;index" json:"list_id"`
 	Tags        []Tag      `gorm:"many2many:todo_tags;" json:"tags"`
 }
