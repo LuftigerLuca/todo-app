@@ -12,6 +12,18 @@ type ListController struct {
 	Service service.ListService
 }
 
+// @Summary      Create list
+// @Description  Creates a new todo list
+// @Tags         List
+// @Accept       json
+// @Produce      json
+// @Param        body  body  dto.CreateListRequest  true  "List data"
+// @Success      200  {object}  dto.CreateListResponse
+// @Failure      400  {object}  dto.ErrorResponse
+// @Failure      401  {object}  dto.ErrorResponse
+// @Failure      500  {object}  dto.ErrorResponse
+// @Security     BearerAuth
+// @Router       /list/create [post]
 func (ctrl *ListController) CreateList(c *gin.Context) {
 	var req dto.CreateListRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

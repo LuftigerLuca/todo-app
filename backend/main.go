@@ -1,13 +1,27 @@
+//go:generate swag init --parseDependency --parseInternal
+
+// @title           Todo App API
+// @description     A Todo List Application
+// @version         1.0
+// @host            localhost:8080
+// @BasePath        /api
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name            Authorization
 package main
 
 import (
 	"log"
 	"os"
 	"todo-app/controller"
+	_ "todo-app/docs"
 	"todo-app/middleware"
 	"todo-app/model"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -16,6 +30,8 @@ func main() {
 	router := gin.Default()
 
 	router.Use(corsMiddleware())
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	authCtrl := controller.AuthController{}
 	listCtrl := controller.ListController{}

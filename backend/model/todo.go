@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// @Enum pending in_progress completed
 type TodoStatus string
 
 const (
