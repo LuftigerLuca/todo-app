@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"todo-app/controller"
+	"todo-app/middleware"
 	"todo-app/model"
 
 	"github.com/gin-gonic/gin"
@@ -17,11 +18,21 @@ func main() {
 	router.Use(corsMiddleware())
 
 	authCtrl := controller.AuthController{}
+	listCtrl := controller.ListController{}
 
 	public := router.Group("/api/auth")
 	{
 		public.POST("/register", authCtrl.Register)
 		public.POST("/login", authCtrl.Login)
+	}
+
+	protected := router.Group("/api")
+	protected.Use(middleware.AuthRequired())
+	{
+		list := protected.Group("/list")
+		{
+			list.POST("/create", listCtrl.CreateList)
+		}
 	}
 
 	port := os.Getenv("PORT")
